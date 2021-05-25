@@ -1,3 +1,4 @@
+import os
 print('Bienvenido al sistema de ubicación para zonas públicas WIFI');
 userName = input('Nombre de Usuario: ');
 if userName != "51676":
@@ -14,3 +15,4 @@ else:
             print('Error');
         else:
             print('Sesión Iniciada'); 
+            os.system("cls")
