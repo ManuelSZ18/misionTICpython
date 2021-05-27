@@ -1,0 +1,41 @@
+#1 INICIO
+#2 Zanahoria
+#3 Cortar Zanahoria
+#4 Arvejas
+#5 Cilantro
+#6 Cimarrón
+#7 Habichuelas
+#8 Cortar Habichuelas
+#9 Maiz Dulce
+#10 Chorizos
+#11 Cortar Chorizos
+#12 Tocineta
+#13 Cortar Tocineta
+#14 Carne de Cerdo
+#15 Cortar Carne de Cerdo
+#16 Carne de Res
+#17 Cortar Carne de Res
+#18 Carne de Pollo
+#19 Cortar Carne de Pollo
+#20 Arroz
+#21 Cebolla Junca
+#22 Cortar Cebolla Junca
+#23 Salsa para Carnes
+#24 Tener todo listo cerca al recipiente de preparación
+#24 Se agrega la carne de Cerdo
+#25 Se deja tostar la carne de Cerdo
+#26 Se agrega cebolla Junca
+#27 Se agrega carne de Res
+#28 Se agrega carne de Pollo
+#29 Se agrega Chorizo
+#30 Se agrega Tocineta
+#31 Se agrega Zanahoria
+#32 Se agrega Maiz Dulce
+#33 Se agrega Habichuelas
+#34 Se lava y agrega el Arroz
+#35 Se agrega el Cimarrón
+#36 Se agrega agua hasta cubrir
+#37 Se agrega Salsa
+#38 Se agrega pimienta
+#39 Se sirve y disfruta
+#40 FIN
