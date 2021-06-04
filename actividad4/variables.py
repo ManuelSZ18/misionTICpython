@@ -8,3 +8,13 @@ tuplas = (1,2,3,4,5) #Variable de tipo tuple
 conjunto = set([1,2,3,4,5]); #Variable de tipo Set
 diccionario = {'a': 1, 'b': 3, 'z': 8} #Variable de tipo Dict
 entero2 = 1990; #Segunda variable de tipo Entero
+print(type(entero))
+print(type(booleano))
+print(type(cadenaDeTexto))
+print(type(decimal))
+print(type(complejo))
+print(type(listas))
+print(type(tuplas))
+print(type(conjunto))
+print(type(diccionario))
+print(type(entero2))
