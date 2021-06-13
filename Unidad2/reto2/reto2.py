@@ -1,5 +1,12 @@
 import os
 
+# Funcion para imprimir menu
+def printMenu ():
+        os.system("cls")
+        print('MENU DE OPCIONES\n') 
+        for menuOption in menuOptions:
+            print(f'{menuOptions.index(menuOption) + 1}. {menuOption}')
+
 print('Bienvenido al sistema de ubicación para zonas públicas WIFI');
 
 # Se solicitan las credeciales de acceso como userName y Password
@@ -21,27 +28,10 @@ else:
         else:
             print('Sesión Iniciada'); 
             os.system("cls")
-            # Creación del menu inicial
-            opt1 = 'Cambiar contraseña';
-            opt2 = 'Ingresar coordenadas actuales';
-            opt3 = 'Ubicar zona wifi más cercana';
-            opt4 = 'Guardar archivo con ubicación cercana';
-            opt5 = 'Actualizar registros de zonas wifi desde archivo';
-            opt6 = 'Elegir opción de menú favorita';
-            opt7 = 'Cerrar sesión.';
-
-            menuOptions = [opt1, opt2, opt3, opt4, opt5, opt6, opt7];  
             
-            # Funcion para imprimir menu
-            def printMenu ():
-                    os.system("cls")
-                    print('MENU DE OPCIONES\n') 
-                    for menuOption in menuOptions:
-                        print(f'{menuOptions.index(menuOption) + 1}. {menuOption}') 
+            menuOptions = ['Cambiar contraseña', 'Ingresar coordenadas actuales', 'Ubicar zona wifi más cercana', 'Guardar archivo con ubicación cercana', 'Actualizar registros de zonas wifi desde archivo', 'Elegir opción de menú favorita', 'Cerrar sesión.'];   
             
-            ''' controlMenu es la variable de control para el menu, mientras su valor 
-            sea menor o igual a 3, el usuario tendra la posibilidad para navegar por el menu.
-            De sobrepasar este valor, se terminara la ejecucion del programa'''
+            #controlMenu es la variable de control para el menu, mientras su valor sea menor o igual a 3, el usuario tendra la posibilidad para navegar por el menu. De sobrepasar este valor, se terminara la ejecucion del programa
             
             controlMenu = 1
             
@@ -86,8 +76,7 @@ else:
                                 printMenu()
                 else:                
                     if chosenMenuOption < 1 or chosenMenuOption > 7:  
-                        controlMenu = controlMenu + 1; 
-                        os.system('cls');
+                        controlMenu = controlMenu + 1 
                         print('Error\n')
                     else:
                         controlMenu = 1;
@@ -95,5 +84,5 @@ else:
                             print('\nHasta pronto')
                             exit()                        
                         else:
-                            print('\nUsted ha elegido la opción número {}'.format(chosenMenuOption))
+                            print('\nUsted ha elegido la opción {}'.format(chosenMenuOption))
                             exit()
