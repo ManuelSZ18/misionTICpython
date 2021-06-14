@@ -1,6 +1,14 @@
 import os
 import sys
 import numpy as np
+import decimal
+
+# Credenciales
+user = 51676
+passwordKey = 67615
+coordinateMatrix = []
+menuOptions = []
+
 # Funcion para imprimir menu
 def printmenu():
     os.system("cls")
@@ -8,10 +16,94 @@ def printmenu():
     for menuOption in menuOptions:
         print(f'{menuOptions.index(menuOption) + 1}. {menuOption}')
 
-# Credenciales
-user = 51676
-passwordKey = 67615
+# Cambiar de password
+def changePassword():
+    
+    checkPassword = int(input('\nIngrese contraseña actual: '))
+    global passwordKey
+    if checkPassword != passwordKey:
+        print('Error')
+        sys.exit()
+    else:
+        newPassword = 0
+        while newPassword == 0:
+            newPassword = int(input('Ingrese nueva contraseña: '))            
+            if newPassword == passwordKey:
+                print('\nLa nueva contraseña no puede ser igual a la contraseña actual.\n')
+                newPassword = 0;
+            else:
+                passwordKey = newPassword
+        newPassword = 0
+        printmenu()
+        return passwordKey
 
+# Solicitar coordenadas por primera vez
+def coordinates():
+    global coordinateMatrix
+    print('Latitud y Longitud para {}:'.format(coordinatePlaces[0]))
+    latitude = input('\nIngresar coordenada de Latitud entre limite inferior de 1.740 y limite superior de 1.998: ')
+    if latitude == '':
+        print('Error')
+        sys.exit()
+    elif float(latitude) < 1.740 or float(latitude) > 1.998:
+        print('Error coordenada')
+        sys.exit()
+    else:
+        length = input('Ingresar coordenada de Longitud entre limite oriental de -75.689 y limite occidental de -75.950: ')
+        if length == '':
+            print('Error')
+            sys.exit()
+        elif float(length) > -75.689 or float(length) < -75.950:
+            print('Error coordenada')
+            sys.exit()
+        else:
+            coordinateMatrix = np.array([[latitude, length]])
+            while len(coordinateMatrix) < 3:
+                print('\nLatitud y Longitud para {}:'.format(coordinatePlaces[len(coordinateMatrix)]))
+                latitude = input('\nIngresar coordenada de Latitud entre limite inferior de 1.740 y limite superior de 1.998: ')
+                if latitude == '':
+                    print('Error')
+                    sys.exit()
+                elif float(latitude) < 1.740 or float(latitude) > 1.998:
+                    print('Error coordenada')
+                    sys.exit()
+                else:
+                    length = input('Ingresar coordenada de Longitud entre limite oriental de -75.689 y limite occidental de -75.950: ')
+                    if length == '':
+                        print('Error')
+                        sys.exit()
+                    elif float(length) > -75.689 or float(length) < -75.950:
+                        print('Error coordenada')
+                        sys.exit()
+                    else:
+                        coordinateMatrix = np.append(coordinateMatrix, [[latitude, length]], axis = 0)
+
+def newCoordenate():
+    global optionChosen
+    global coordinateMatrix
+    coordinateMatrix = np.delete(coordinateMatrix, optionChosen - 1, 0)
+    latitude = input('\nIngresar coordenada de Latitud entre limite inferior de 1.740 y limite superior de 1.998: ')
+    if latitude == '':
+        print('Error')
+        sys.exit()
+    elif float(latitude) < 1.740 or float(latitude) > 1.998:
+        print('Error actualización')
+        sys.exit()
+    else:
+        length = input('Ingresar coordenada de Longitud entre limite occidental de -75.950 y limite oriental de -75.689: ')
+        if length == '':
+            print('Error')
+            sys.exit()
+        elif float(length) > -75.689 or float(length) < -75.950:
+            print('Error actualización')
+            sys.exit()
+        else:
+            newCoordenate = [latitude, length]
+            coordinateMatrix = np.insert(coordinateMatrix, optionChosen - 1, newCoordenate, 0)
+      
+# ================================================================
+#                       INICIO PROGRAMA 
+            
 print('Bienvenido al sistema de ubicación para zonas públicas WIFI')
 
 # Se solicitan las credeciales de acceso como userName y Password
@@ -40,7 +132,7 @@ else:
             op4 = 'Guardar archivo con ubicación cercana'
             op5 = 'Actualizar registros de zonas wifi desde archivo'
             op6 = 'Elegir opción de menú favorita'
-            op7= 'Cerrar sesión.'
+            op7 = 'Cerrar sesión.'
             menuOptions = [op1, op2, op3, op4, op5, op6, op7]
             
             #controlMenu es la variable de control para el menu, mientras su valor sea menor o igual a 3, el usuario tendra la posibilidad para navegar por el menu. De sobrepasar este valor, se terminara la ejecucion del programa
@@ -98,61 +190,35 @@ else:
                         else:
                             # Cambio de Contraseña
                             if menuOptions[chosenMenuOption - 1] == menuOptions[menuOptions.index(op1)]:
-                                whileControl = False
-                                while whileControl == False:  
-                                        confirmation = int(input('\nIngrese contraseña actual: '))
-                                        if confirmation != passwordKey:
-                                            print('Error')
-                                            sys.exit()
-                                        else:
-                                            whileControl = True
-                                            newPassword = int(input('\nIngrese la nueva constraseña: '))                                    
-                                            if newPassword == passwordKey:
-                                                print('La nueva contraseña no puede ser igual a la contraseña actual\n')
-                                            else:
-                                                passwordKey  = newPassword   
-                                                printmenu()
+                                changePassword()  
                             # Ingresar coordenadas actuales
                             elif menuOptions[chosenMenuOption - 1] == menuOptions[menuOptions.index(op2)]:
-                                    latitude = input('Ingresar coordenada de Latitud: ')
-                                    if latitude == '':
+                                coordinatePlaces = ['Trabajo', 'Casa', 'Parque']
+                                if len(coordinateMatrix) == 0:
+                                    os.system('clear')
+                                    coordinates()
+                                    printmenu()
+                                else:
+                                    os.system('cls')
+                                    maxSouth = [coordinateMatrix[0][0], coordinateMatrix[1][0], coordinateMatrix[2][0]];
+                                    maxWest = [coordinateMatrix[0][1], coordinateMatrix[1][1], coordinateMatrix[2][1]]
+                                    for i in range(0,len(coordinateMatrix)):
+                                        print('Coordenada [Latitud, Longitud] {}: {}'.format(i + 1, coordinateMatrix[i]))
+                                    print('La coordenada {} es la que está más al sur'.format(maxSouth.index(min(maxSouth))))
+                                    print('La coordenada {} es la que está más al occidente'.format(maxWest.index(min(maxWest))))
+                                    print('Presione 1, 2 o 3 para actualizar la respectiva coordenada')
+                                    optionChosen = int(input(('Presione 0 para regresar al menu')))
+                                    if optionChosen < 0 and optionChosen > 3:
                                         print('Error')
                                         sys.exit()
-                                    elif float(latitude) < 1.740 or float(latitude) > 1.998:
-                                        print('Error coordenada')
-                                        sys.exit()
+                                    elif optionChosen == 0:
+                                        printmenu()
+                                    elif optionChosen == 1 or optionChosen == 2 or optionChosen == 3:
+                                        newCoordenate()
+                                        printmenu()
                                     else:
-                                        length = input('Ingresar coordenada de Longitud: ')
-                                        if length == '':
-                                            print('Error')
-                                            sys.exit()
-                                        elif float(length) > -75.950 or float(length) < -75.689:
-                                            print('Error coordenada')
-                                            sys.exit()
-                                        else:
-                                            coordinateMatrix = np.array([[latitude, length]])
-                                            control = 0
-                                            while control < 2:
-                                                latitude = input('Ingresar coordenada de Latitud: ')
-                                                if latitude == '':
-                                                    print('Error')
-                                                    sys.exit()
-                                                elif float(latitude) < 1.740 or float(latitude) > 1.998:
-                                                    print('Error coordenada')
-                                                    sys.exit()
-                                                else:
-                                                    length = input('Ingresar coordenada de Longitud: ')
-                                                    if length == '':
-                                                        print('Error')
-                                                        sys.exit()
-                                                    elif float(length) > -75.950 or float(length) < -75.689:
-                                                        print('Error coordenada')
-                                                        sys.exit()   
-                                                    else:                                            
-                                                        coordinateMatrix = np.append(coordinateMatrix, [[latitude, length]], axis = 0)
-                                                        control = control + 1
-                                            print(coordinateMatrix)  
-                                            sys.exit()
+                                        print('Error actualización')
+                                        sys.exit()
                             else:
                                 print('Ud a elegido la opcion {}'.format(chosenMenuOption))
                                 sys.exit()
