@@ -1,11 +1,31 @@
 import os
 import sys
 import numpy as np
-import decimal
+import requests
 
+if __name__ == '__main__':
+    url = 'https://www.datos.gov.co/resource/rejx-ewy7.json'
+    args = {'municipio' : 'SUAZA'}
+    response = requests.get(url, params = args)
+
+    if response.status_code == 200:
+        payload = response.json()
+        results = payload        
+        if results:
+            latitude = results[0].get('coordenadas_de_referencia')
+            longitude = results[0].get('coordenadas_de_referencia_1')
+            activeUsers = results[0].get('n_usuarios_activos_mes')
+            zonasWifi = np.array([[latitude, longitude, activeUsers]])
+            for result in range(1, len(results)):
+                    latitude = results[result].get('coordenadas_de_referencia')
+                    longitude = results[result].get('coordenadas_de_referencia_1')
+                    activeUsers = results[result].get('n_usuarios_activos_mes')
+                    zonasWifi = np.append(zonasWifi, [[latitude, longitude, activeUsers]], axis = 0)            
 # Credenciales
 user = 51676
 passwordKey = 67615
+
+# Declaración listas
 coordinateMatrix = []
 menuOptions = []
 
@@ -79,9 +99,9 @@ def coordinates():
                         coordinateMatrix = np.append(coordinateMatrix, [[latitude, length]], axis = 0)
 
 def newCoordenate():
-    global optionChosen
+    global chosenUpdateOption
     global coordinateMatrix
-    coordinateMatrix = np.delete(coordinateMatrix, optionChosen - 1, 0)
+    coordinateMatrix = np.delete(coordinateMatrix, chosenUpdateOption - 1, 0)
     latitude = input('\nIngresar coordenada de Latitud entre limite inferior de 1.740 y limite superior de 1.998: ')
     if latitude == '':
         print('Error')
@@ -99,7 +119,7 @@ def newCoordenate():
             sys.exit()
         else:
             newCoordenate = [latitude, length]
-            coordinateMatrix = np.insert(coordinateMatrix, optionChosen - 1, newCoordenate, 0)
+            coordinateMatrix = np.insert(coordinateMatrix, chosenUpdateOption - 1, newCoordenate, 0)
       
 # ================================================================
 #                       INICIO PROGRAMA 
@@ -206,19 +226,21 @@ else:
                                         print('Coordenada [Latitud, Longitud] {}: {}'.format(i + 1, coordinateMatrix[i]))
                                     print('La coordenada {} es la que está más al sur'.format(maxSouth.index(min(maxSouth))))
                                     print('La coordenada {} es la que está más al occidente'.format(maxWest.index(min(maxWest))))
-                                    print('Presione 1, 2 o 3 para actualizar la respectiva coordenada')
-                                    optionChosen = int(input(('Presione 0 para regresar al menu')))
-                                    if optionChosen < 0 and optionChosen > 3:
+                                    print('Presione 1, 2 o 3 para actualizar la respectiva coordenada. ')
+                                    chosenUpdateOption = int(input(('Presione 0 para regresar al menu. ')))
+                                    if chosenUpdateOption < 0 and chosenUpdateOption > 3:
                                         print('Error')
                                         sys.exit()
-                                    elif optionChosen == 0:
+                                    elif chosenUpdateOption == 0:
                                         printmenu()
-                                    elif optionChosen == 1 or optionChosen == 2 or optionChosen == 3:
+                                    elif chosenUpdateOption == 1 or chosenUpdateOption == 2 or chosenUpdateOption == 3:
                                         newCoordenate()
                                         printmenu()
                                     else:
                                         print('Error actualización')
                                         sys.exit()
+                            elif menuOptions[chosenMenuOption - 1] == menuOptions[menuOptions.index(op3)]:
+                                print(zonasWifi)
                             else:
                                 print('Ud a elegido la opcion {}'.format(chosenMenuOption))
                                 sys.exit()
