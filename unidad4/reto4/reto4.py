@@ -1,17 +1,7 @@
 import os
 import sys
-import requests
 import math
 
-if __name__ == '__main__':
-    url = 'https://www.datos.gov.co/resource/rejx-ewy7.json'
-    args = {'municipio' : 'SUAZA'}
-    response = requests.get(url, params = args)
-
-    if response.status_code == 200:
-        payload = response.json()
-        results = payload        
-            
 # Credenciales
 user = 51676
 passwordKey = 67615
@@ -110,9 +100,64 @@ def truncate(num, n):
     integer = int(num * (10**n))/(10**n)
     return float(integer)
 
-def timeToWifiZone(distanceZoneWifi, vehicle):              
+def timeToWifiZone(distanceZoneWifi, vehicle): 
     time = truncate((distanceZoneWifi / vehicle), 0) 
     return time
+
+def ubicationZoneWifi(chosenMenuDistance):
+    os.system('cls')
+    latitudInicial = float(coordinateMatrix[chosenMenuDistance - 1][0])
+    longitudInicial = float(coordinateMatrix[chosenMenuDistance - 1][1])
+    for nearWifi2 in range(0, 4):
+        lati2 = float(filteredWifiZones[nearWifi2][0])
+        long2 = float(filteredWifiZones[nearWifi2][1])
+        distanceWifiZones.append(distanceCal(latitudInicial, longitudInicial, lati2, long2)) 
+        
+    latitudDestino = truncate(filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][0], 3)
+    longitudDestino = truncate(filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][1], 3)
+    metersPrint = round(min(distanceWifiZones))
+    activeUsersPrint = filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][2]
+    
+    print('Zonas wifi cercanas con menos usuarios')
+    print(f"La zona wifi 1: ubicada en ['{latitudDestino}', '{longitudDestino}'] a {metersPrint} metros, tiene en promedio {activeUsersPrint} usuarios")
+    
+    distanceWifiZones.remove(min(distanceWifiZones))
+    latitudDestino2 = truncate(filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][0], 3)
+    longitudDestino2 = truncate(filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][1], 3)
+    metersPrint2 = round(min(distanceWifiZones))
+    activeUsersPrint2 = filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][2]
+    
+    print(f"La zona wifi 2: ubicada en ['{latitudDestino2}', '{longitudDestino2}'] a {metersPrint2} metros, tiene en promedio {activeUsersPrint2} usuarios")       
+    
+    chosenMenuNearWifi = int(input('Elija 1 o 2 para recibir las indicaciones de llegada: '))
+    if chosenMenuNearWifi < 1 or chosenMenuNearWifi > 2:
+        print('Error zona wifi')
+        sys.exit()
+    else:
+        pie = 0.483
+        auto = 20.83
+        if longitudInicial < longitudDestino:
+            if latitudInicial < latitudDestino:
+                print('\nPara llegar a la zona wifi dirigirse primero al oriente y luego hacia el norte')        
+            else:
+                print('\nPara llegar a la zona wifi dirigirse primero al oriente y luego hacia el sur')        
+        else:
+            if latitudInicial < latitudDestino:
+                print('\nPara llegar a la zona wifi dirigirse primero al occidente y luego hacia el norte')        
+            else:
+                print('\nPara llegar a la zona wifi dirigirse primero al occidente y luego hacia el sur')    
+                
+        if chosenMenuNearWifi == 1: 
+            print('\nTiempo a pie {} segundos'.format(timeToWifiZone(metersPrint, pie)))
+            print('Tiempo en auto {} segundos'.format(timeToWifiZone(metersPrint, auto)))            
+        else:
+            print('\nTiempo a pie {} segundos'.format(timeToWifiZone(metersPrint2, pie)))
+            print('Tiempo en auto {} segundos'.format(timeToWifiZone(metersPrint2, auto)))
+        
+        exitWifiZones = int(input('\nPresione 0 para salir '))
+        
+        if exitWifiZones == 0:
+            printmenu()
 # ================================================================
 #                       INICIO PROGRAMA 
             
@@ -231,7 +276,34 @@ else:
                                     else:
                                         print('Error actualización')
                                         sys.exit()
-                            # Ubicar Zona Wifi mas cercana                                
+                            # Ubicar Zona Wifi mas cercana
+                            elif menuOptions[chosenMenuOption - 1] == menuOptions[menuOptions.index(op3)]:
+                                if len(coordinateMatrix) == 0:
+                                    print('Error sin registro de coordenadas')
+                                    sys.exit()
+                                else:
+                                    os.system('cls')
+                                    filteredWifiZones = []
+                                    
+                                    zonesWifi = [[1.811, -75.820, 58], [1.919, -75.843, 1290], [1.875, -75.877, 110], [1.938, -75.764, 114]]
+                                    
+                                    for i in range(0, len(zonesWifi)):
+                                        if zonesWifi[i][2] == 58 or zonesWifi[i][2] == 1290 or zonesWifi[i][2] == 110 or zonesWifi[i][2] == 114:
+                                            if zonesWifi[i][0] > 1.740 and zonesWifi[i][0] < 1.998:
+                                                if zonesWifi[i][1] < -75.689 and zonesWifi[i][1] > -75.950:
+                                                    filteredWifiZones.append(zonesWifi[i])
+                                        
+                                    for i in range(0,len(coordinateMatrix)):
+                                        print("Coordenada [Latitud, Longitud] {}: ['{}', '{}']".format(i + 1, str(coordinateMatrix[i][0]), str(coordinateMatrix[i][1])))
+                                        
+                                    chosenMenuDistance = int(input('Por favor elija su ubicación actual (1, 2 ó 3) para calcular la distancia de los puntos de conexión: '))
+                                    
+                                    if chosenMenuDistance < 1 or chosenMenuDistance > 3:
+                                        print('Error ubicación')
+                                        sys.exit()
+                                    else:
+                                        distanceWifiZones = []
+                                        ubicationZoneWifi(chosenMenuDistance)
                             else:
                                 print('Ud a elegido la opcion {}'.format(chosenMenuOption))
-                                sys.exit() 
+                                sys.exit()
