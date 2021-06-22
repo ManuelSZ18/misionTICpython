@@ -17,7 +17,6 @@ def printmenu():
 
 # Cambiar de password
 def changePassword():
-    
     checkPassword = int(input('\nIngrese contraseña actual: '))
     global passwordKey
     if checkPassword != passwordKey:
@@ -65,7 +64,6 @@ def newCoordenate():
     global chosenUpdateOption
     global coordinateMatrix
     coordinateMatrix.pop(chosenUpdateOption - 1)
-    print(coordinateMatrix)
     latitude = input('\nIngresar coordenada de Latitud entre limite inferior de 1.740 y limite superior de 1.998: ')
     if latitude == '':
         print('Error')
@@ -88,10 +86,10 @@ def newCoordenate():
 # Calcular distancia
 def distanceCal(lat1, lon1, lat2, lon2):
     R = 6372.795477598
-    term1 = pow(math.sin((lat2 - lat1)/2), 2)
-    term2 = math.cos(lat1)
-    term3 = math.cos(lat2)
-    term4 = pow(math.sin((lon2 - lon1)/2), 2)
+    term1 = pow(math.sin(math.radians((lat2 - lat1)/2)), 2)
+    term2 = math.cos(math.radians(lat1))
+    term3 = math.cos(math.radians(lat2))
+    term4 = pow(math.sin(math.radians((lon2 - lon1)/2)), 2)
     raiz = math.sqrt(term1 +  term2 * term3 * term4)
     distance = round(2 * R * math.asin(raiz), 0)
     return distance
@@ -285,7 +283,10 @@ else:
                                     os.system('cls')
                                     filteredWifiZones = []
                                     
-                                    zonesWifi = [[1.811, -75.820, 58], [1.919, -75.843, 1290], [1.875, -75.877, 110], [1.938, -75.764, 114]]
+                                    zonesWifi = [[1.811, -75.820, 58], 
+                                                 [1.919, -75.843, 1290], 
+                                                 [1.875, -75.877, 110], 
+                                                 [1.938, -75.764, 114]]
                                     
                                     for i in range(0, len(zonesWifi)):
                                         if zonesWifi[i][2] == 58 or zonesWifi[i][2] == 1290 or zonesWifi[i][2] == 110 or zonesWifi[i][2] == 114:
@@ -307,4 +308,3 @@ else:
                             else:
                                 print('Ud a elegido la opcion {}'.format(chosenMenuOption))
                                 sys.exit()
-                                
