@@ -6,10 +6,9 @@ import math
 user = 51676
 passwordKey = 67615
 
-# Declaración variables
+# Declaración listas
 coordinateMatrix = []
 filteredWifiZones = []
-distanceWifiZones = []
 information = {}
 # Funcion para imprimir menu
 def printmenu():
@@ -106,8 +105,8 @@ def timeToWifiZone(distanceZoneWifi, vehicle):
     return time
 
 def ubicationZoneWifi(chosenMenuDistance):
+    global information
     os.system('cls')
-    transport = [0.483, 20.83]
     latitudInicial = float(coordinateMatrix[chosenMenuDistance - 1][0])
     longitudInicial = float(coordinateMatrix[chosenMenuDistance - 1][1])
     for nearWifi2 in range(0, 4):
@@ -120,15 +119,6 @@ def ubicationZoneWifi(chosenMenuDistance):
     metersPrint = round(min(distanceWifiZones))
     activeUsersPrint = filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][2]
     
-    latitudStart = latitudInicial
-    longitudStart = longitudInicial
-    LatitudEnd = latitudDestino
-    longitudEnd = longitudDestino
-    usuarios = activeUsersPrint
-    distancia = metersPrint
-    medioTransporte = 'Moto'
-    tiempoPromedio = timeToWifiZone(metersPrint, transport[0])    
-    
     print('Zonas wifi cercanas con menos usuarios')
     print(f"La zona wifi 1: ubicada en ['{latitudDestino}', '{longitudDestino}'] a {metersPrint} metros, tiene en promedio {activeUsersPrint} usuarios")
     
@@ -138,7 +128,6 @@ def ubicationZoneWifi(chosenMenuDistance):
     metersPrint2 = round(min(distanceWifiZones))
     activeUsersPrint2 = filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][2]
     
-    
     print(f"La zona wifi 2: ubicada en ['{latitudDestino2}', '{longitudDestino2}'] a {metersPrint2} metros, tiene en promedio {activeUsersPrint2} usuarios")       
     
     chosenMenuNearWifi = int(input('Elija 1 o 2 para recibir las indicaciones de llegada: '))
@@ -146,10 +135,8 @@ def ubicationZoneWifi(chosenMenuDistance):
         print('Error zona wifi')
         sys.exit()
     else:
-        
-        moto = transport[0]
-        auto = transport[1]
-        
+        moto = 19.44 
+        auto = 20.83
         if longitudInicial < longitudDestino:
             if latitudInicial < latitudDestino:
                 print('\nPara llegar a la zona wifi dirigirse primero al oriente y luego hacia el norte')        
@@ -162,13 +149,20 @@ def ubicationZoneWifi(chosenMenuDistance):
                 print('\nPara llegar a la zona wifi dirigirse primero al occidente y luego hacia el sur')    
                 
         if chosenMenuNearWifi == 1: 
-            print('\nTiempo a pie {} segundos'.format(timeToWifiZone(metersPrint, moto)))
-            print('Tiempo en auto {} segundos'.format(timeToWifiZone(metersPrint, auto)))            
+            averageMotoTime = timeToWifiZone(metersPrint, moto)
+            averageAutoTime = timeToWifiZone(metersPrint, auto)
+            print('\nTiempo a moto {} segundos'.format(averageMotoTime))
+            print('Tiempo en auto {} segundos'.format(averageAutoTime))            
+            information = {'actual' : [latitudInicial, longitudInicial], 'zonawifi1' : [latitudDestino, longitudDestino, activeUsersPrint], 'recorrido' : [metersPrint, 'moto', averageMotoTime]}
         else:
-            print('\nTiempo a pie {} segundos'.format(timeToWifiZone(metersPrint2, moto)))
-            print('Tiempo en auto {} segundos'.format(timeToWifiZone(metersPrint2, auto)))
+            averageMotoTime = timeToWifiZone(metersPrint2, moto)
+            averageAutoTime = timeToWifiZone(metersPrint2, auto)
+            print('\nTiempo a moto {} segundos'.format(averageAutoTime))
+            print('Tiempo en auto {} segundos'.format(averageAutoTime))
+            information = {'actual' : [latitudInicial, longitudInicial], 'zonawifi1' : [latitudDestino, longitudDestino, activeUsersPrint], 'recorrido' : [metersPrint2, 'moto', averageMotoTime]}
         
         exitWifiZones = int(input('\nPresione 0 para salir '))
+        
         
         if exitWifiZones == 0:
             printmenu()
@@ -296,8 +290,7 @@ else:
                                     print('Error sin registro de coordenadas')
                                     sys.exit()
                                 else:
-                                    os.system('cls')
-                                    
+                                    os.system('cls')   
                                     zonesWifi = [[1.811, -75.820, 58], 
                                                  [1.919, -75.843, 1290], 
                                                  [1.875, -75.877, 110], 
@@ -312,45 +305,31 @@ else:
                                     for i in range(0,len(coordinateMatrix)):
                                         print("Coordenada [Latitud, Longitud] {}: ['{}', '{}']".format(i + 1, str(coordinateMatrix[i][0]), str(coordinateMatrix[i][1])))
                                         
-                                        
                                     chosenMenuDistance = int(input('Por favor elija su ubicación actual (1, 2 ó 3) para calcular la distancia de los puntos de conexión: '))
                                     
                                     if chosenMenuDistance < 1 or chosenMenuDistance > 3:
                                         print('Error ubicación')
                                         sys.exit()
                                     else:
-                                        
+                                        distanceWifiZones = []
                                         ubicationZoneWifi(chosenMenuDistance)
                             elif menuOptions[chosenMenuOption - 1] == menuOptions[menuOptions.index(op4)]:
-                                if len(coordinateMatrix) == 0 or len(filteredWifiZones) == 0:
+                                if len(coordinateMatrix) == 0 or filteredWifiZones == []:
                                     print('Error de alistamiento')
                                     sys.exit()
                                 else:
-                                    latitudInicial = float(coordinateMatrix[chosenMenuDistance - 1][0])
-                                    longitudInicial = float(coordinateMatrix[chosenMenuDistance - 1][1])
-                                    for nearWifi2 in range(0, 4):
-                                        lati2 = float(filteredWifiZones[nearWifi2][0])
-                                        long2 = float(filteredWifiZones[nearWifi2][1])
-                                        distanceWifiZones.append(distanceCal(latitudInicial, longitudInicial, lati2, long2)) 
-                                        
-                                    latitudDestino = truncate(filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][0], 3)
-                                    longitudDestino = truncate(filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][1], 3)
-                                    metersPrint = round(min(distanceWifiZones))
-                                    activeUsersPrint = filteredWifiZones[distanceWifiZones.index(min(distanceWifiZones))][2]
-                                    
-                                    latitudStart = latitudInicial
-                                    longitudStart = longitudInicial
-                                    LatitudEnd = latitudDestino
-                                    longitudEnd = longitudDestino
-                                    usuarios = activeUsersPrint
-                                    distancia = metersPrint
-                                    medioTransporte = 'Moto'
-                                    tiempoPromedio = timeToWifiZone(metersPrint, 19.44)    
-                                    information = {  'actual' : [latitudStart, longitudStart],
-                                                    'zonawifi1' : [LatitudEnd, longitudEnd, usuarios],
-                                                    'recorrido' : [distancia, medioTransporte, tiempoPromedio]
-                                                }
-                                    print(information)
+                                    for key, value in information.items():
+                                        print(key, value)
+                                    chosenExport = int(input('¿Está de acuerdo con la información a exportar? Presione 1 para confirmar, 0 para regresar al menú principal. '))
+                                    if chosenExport == 1:
+                                        print('\nExportando archivo')
+                                        sys.exit()
+                                    else:
+                                        printmenu()
+                            elif menuOptions[chosenMenuOption - 1] == menuOptions[menuOptions.index(op5)]:
+                                choseExternalDataOption = int(input('Datos de coordenadas para zonas wifi actualizados, presione 0 para regresar al menú principal. ' ))
+                                if choseExternalDataOption == 0:
+                                    printmenu()
                             else:
                                 print('Ud a elegido la opcion {}'.format(chosenMenuOption))
                                 sys.exit()
